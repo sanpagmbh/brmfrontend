@@ -8,7 +8,6 @@ import ClientOAuth2  from 'client-oauth2'
 let amount = 0
 
 const Home = props => {
- 
   return (
     <div className={styles.container}>
       <Head>
@@ -23,6 +22,15 @@ const Home = props => {
         <text>
           {props.date}
         </text>
+          {/* {props.memberArray && (props.memberArray.map((member) => {
+           console.log()
+           return (<div></div>)
+            // <text>
+            //   {member.name}
+            // </text>
+
+          
+          }))} */}
       </main>
     </div>
   )
@@ -66,8 +74,8 @@ Home.getInitialProps = async () => {
 
   let accessToken = client.createToken(resp.data)
   let brmDataURL = 'https://esi.evetech.net/latest/corporations/98666713/wallets/1/journal/'
-  const brmData = await axios.get(brmDataURL, { headers: { "Authorization": `Bearer ${accessToken.data.access_token}` } })
   let amount = 0
+  const brmData = await axios.get(brmDataURL, { headers: { "Authorization": `Bearer ${accessToken.data.access_token}` } })
   
   let startDate = new Date('2021-05-03T07:00:00Z')
   
@@ -81,29 +89,17 @@ Home.getInitialProps = async () => {
 
   
   if (brmData && brmData.data) {
-    let playAmount = 0
-    let memberArray = {}
-    let count = 0
-    brmData.data.map(brmData => {
-      if (brmData.description.includes('SBEN-Q') && brmData.date > startDate) {
-        // if ((brmData.first_party_id === 1000125 || brmData.first_party_id === 1000132) && brmData.date > '2021-04-30T04:00:41Z') {
-        if (brmData.description.includes('Scorpicon Crow')) {
-          playAmount = playAmount + brmData.amount
-        }
+    console.log(startDate)
+    brmData.data.map(brmData =>{
+      // if (brmData.description.includes('SBEN-Q') && brmData.date > '2021-05-04T08:00:00Z') {
+      if (brmData.description.includes('SBEN-Q') && new Date(brmData.date) > startDate) {
 
-        count++
-        if (memberArray[brmData.second_party_id]) {
-          memberArray[brmData.second_party_id] = memberArray[brmData.second_party_id] + ((brmData.amount))
-
-        } else {
-          memberArray[brmData.second_party_id] = ((brmData.amount))
-        }
         amount = amount + brmData.amount
       }
     })
   }
-  let result = Math.ceil(amount * 20)
 
+  let result = Math.ceil(amount * 20)
   result = result.toString();
   var pattern = /(-?\d+)(\d{3})/
   while (pattern.test(result))
