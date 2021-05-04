@@ -8,7 +8,6 @@ import ClientOAuth2  from 'client-oauth2'
 let amount = 0
 
 const Home = props => {
-  const [resp] = useState(props.resp);
  
   return (
     <div className={styles.container}>
@@ -21,6 +20,9 @@ const Home = props => {
         <h1 className={styles.title}>
           {props.resp}
         </h1>
+        <text>
+          {props.date}
+        </text>
       </main>
     </div>
   )
@@ -67,7 +69,7 @@ Home.getInitialProps = async () => {
   const brmData = await axios.get(brmDataURL, { headers: { "Authorization": `Bearer ${accessToken.data.access_token}` } })
   let amount = 0
   
-  let startDate = new Date('2021-05-03T07:00:41Z')
+  let startDate = new Date('2021-05-03T07:00:00Z')
   
   let diff = (new Date() - startDate) / 1000 / 60 / 60
   let count = 0
@@ -108,6 +110,6 @@ Home.getInitialProps = async () => {
     result = result.replace(pattern, "$1.$2")
 
 
-  return { resp: result }
+  return { resp: result, date: startDate.toString()}
   }
 export default Home
